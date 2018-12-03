@@ -1,16 +1,16 @@
 window.addEventListener("load", function() {
   'use strict';
 
-  let textAreaList = document.getElementsByTagName("textarea");
-  let textAreas = Object.values(textAreaList);
-  textAreas.forEach((textArea, index) => {
+  let textAreas = Array.from(document.getElementsByTagName("textarea"));
+  textAreas.forEach(textArea => {
     textArea.addEventListener("input", e => {
-      let lines = (textArea.value + '\n').match(/\n/g).length;
-      textArea.rows = Math.max(2,lines); //textareaの高さを動的に変える
       if (textArea.className == "input") {
+        let lines = (textArea.value + '\n').match(/\n/g).length;
+        textArea.rows = Math.max(2,lines); //textareaの高さを動的に変える
         let translatedText = translate(textArea);
         let outputTextArea = textArea.parentNode.getElementsByClassName("output")[0];
         outputTextArea.value = translatedText;
+        outputTextArea.rows = Math.max(2,lines);
       }
     });
   });
@@ -22,8 +22,7 @@ window.addEventListener("load", function() {
  * @returns {String} 翻訳後の文字列
  */
 function translate(textArea) {
-  console.log("translate");
-  let inputText = textArea.value;
+  let inputText = Array.from(textArea.value);
   let outputText = "";
   let mode;
   if (textArea.id == "RtJ_in") {
@@ -31,7 +30,8 @@ function translate(textArea) {
   } else if (textArea.id == "JtR_in") {
     mode = 1;
   }
-  [].forEach.call(inputText, s => {
+
+  inputText.forEach(s => {
     outputText += convert(mode, s);
   });
   return outputText;
